@@ -1,0 +1,383 @@
+@startuml
+!theme cyborg-outline
+
+' Entidades
+package com.jem.barataria.model {
+    class AutorEntity {
+        -Long idAutor
+        -String nombre
+        -String apellido1
+        -String apellido2
+        -String textoAutor
+        -Set<LibroEntity> libros
+    }
+
+    class ColeccionEntity {
+        -Long idColeccion
+        -GrupoBaratariaEntity grupoBarataria
+        -String nombreColeccion
+        -String textoColeccion
+        -Boolean coleccionActiva
+        -Set<LibroEntity> libros
+    }
+
+    class DistribucionEntity {
+        -Long idDistribuidor
+        -GrupoBaratariaEntity grupoBarataria
+        -String nombre
+        -String telefono1
+        -String telefono2
+        -String email1
+        -String email2
+        -String pais
+        -String region
+        -String direccion
+        -String web
+        -Boolean distribuidorEspania
+        -Boolean distribuidorActivo
+    }
+
+    class GrupoBaratariaEntity {
+        -Long idEditorial
+        -String nombreEditorial
+        -String textoEditorial
+        -Set<UsuarioEntity> usuarios
+        -Set<DistribucionEntity> distribuciones
+        -Set<ColeccionEntity> colecciones
+    }
+
+    class LibroEntity {
+        -Long idLibro
+        -ColeccionEntity coleccion
+        -AutorEntity autor
+        -String titulo
+        -String subtitulo
+        -String isbn
+        -String textoLibro
+        -Double precio
+        -Integer paginas
+        -String formato
+        -Integer anioPublicacion
+        -String traductor
+        -Boolean destacado
+        -Boolean libroActivo
+    }
+
+    class UsuarioEntity {
+        -Long idUsuario
+        -GrupoBaratariaEntity grupoBarataria
+        -String nombre
+        -String apellido1
+        -String apellido2
+        -String telefono
+        -String email
+        -String nombreUsuario
+        -String contraseña
+        -RolUsuario rolUsuario
+        -Boolean usuarioActivo
+    }
+}
+
+' DTOs
+package com.jem.barataria.dto {
+    class AutorDto {
+        -Long idAutor
+        -String nombre
+        -String apellido1
+        -String apellido2
+        -String textoAutor
+        -Set<Long> librosIds
+    }
+
+    class ColeccionDto {
+        -Long id
+        -String nombreColeccion
+        -String textoColeccion
+        -Boolean coleccionActiva
+        -List<LibroDto> libros
+    }
+
+    class DistribucionDto {
+        -Long idDistribuidor
+        -Long idEditorial
+        -String nombre
+        -String telefono1
+        -String telefono2
+        -String email1
+        -String email2
+        -String pais
+        -String region
+        -String direccion
+        -String web
+        -Boolean distribuidorEspania
+        -Boolean distribuidorActivo
+    }
+
+    class GrupoBaratariaDto {
+        -Long idEditorial
+        -String nombreEditorial
+        -String textoEditorial
+    }
+
+    class LibroDto {
+        -Long idLibro
+        -String titulo
+        -String subtitulo
+        -String isbn
+        -String textoLibro
+        -Double precio
+        -Integer paginas
+        -String formato
+        -Integer anioPublicacion
+        -String traductor
+        -Boolean destacado
+        -Boolean libroActivo
+        -Long idColeccion
+        -Long idAutor
+        -AutorDto autor
+    }
+
+    class UsuarioDto {
+        -Long idUsuario
+        -String nombre
+        -String apellido1
+        -String apellido2
+        -String telefono
+        -String email
+        -String nombreUsuario
+        -RolUsuario rolUsuario
+        -Boolean usuarioActivo
+        -String contraseña
+    }
+}
+
+' Repositorios
+package com.jem.barataria.repository {
+    interface AutorRepository {}
+    interface ColeccionRepository {}
+    interface DistribucionRepository {}
+    interface GrupoBaratariaRepository {}
+    interface LibroRepository {}
+    interface UsuarioRepository {}
+}
+
+' Servicios
+package com.jem.barataria.service {
+    class AutorService {
+        -AutorRepository autorRepository
+        +findAll() : List<AutorDto>
+        +findById(Long) : AutorDto
+        +save(AutorDto) : AutorDto
+        +deleteById(Long) : boolean
+    }
+
+    class ColeccionService {
+        -ColeccionRepository coleccionRepository
+        +findAll() : List<ColeccionDto>
+        +findById(Long) : ColeccionDto
+        +save(ColeccionDto) : ColeccionDto
+        +deleteById(Long) : boolean
+        +obtenerTodasLasColeccionesConDetalles() : List<ColeccionDto>
+    }
+
+    class DistribucionService {
+        -DistribucionRepository distribucionRepository
+        -GrupoBaratariaRepository grupoBaratariaRepository
+        +findAll() : List<DistribucionDto>
+        +findById(Long) : Optional<DistribucionDto>
+        +saveOrUpdate(DistribucionDto) : DistribucionDto
+        +deleteById(Long) : boolean
+    }
+
+    class GrupoBaratariaService {
+        -GrupoBaratariaRepository grupoBaratariaRepository
+        +findAll() : List<GrupoBaratariaDto>
+        +findById(Long) : Optional<GrupoBaratariaDto>
+        +saveOrUpdate(GrupoBaratariaDto) : GrupoBaratariaDto
+        +deleteById(Long) : boolean
+    }
+
+    class LibroService {
+        -LibroRepository libroRepository
+        -AutorRepository autorRepository
+        -ColeccionRepository coleccionRepository
+        +findAll() : List<LibroDto>
+        +findById(Long) : LibroDto
+        +save(LibroDto) : LibroDto
+        +deleteById(Long) : boolean
+    }
+
+    class UsuarioService {
+        -UsuarioRepository usuarioRepository
+        -PasswordEncoder passwordEncoder
+        +findAll() : List<UsuarioDto>
+        +buscarPorId(Long) : UsuarioDto
+        +registrarUsuario(UsuarioDto, String) : UsuarioDto
+        +autenticarUsuario(String, String) : Optional<UsuarioDto>
+        +eliminarUsuario(Long) : void
+    }
+}
+
+' Controladores
+package com.jem.barataria.controller {
+    class AutorController {
+        -AutorService autorService
+        +getAllAutores() : ResponseEntity<List<AutorDto>>
+        +getAutorById(Long) : ResponseEntity<AutorDto>
+        +createAutor(AutorDto) : ResponseEntity<AutorDto>
+        +updateAutor(Long, AutorDto) : ResponseEntity<AutorDto>
+        +deleteAutor(Long) : ResponseEntity<Void>
+    }
+
+    class ColeccionController {
+        -ColeccionService coleccionService
+        +getAllColecciones() : ResponseEntity<List<ColeccionDto>>
+        +getColeccionById(Long) : ResponseEntity<ColeccionDto>
+        +createColeccion(ColeccionDto) : ResponseEntity<ColeccionDto>
+        +updateColeccion(Long, ColeccionDto) : ResponseEntity<ColeccionDto>
+        +deleteColeccion(Long) : ResponseEntity<Void>
+        +obtenerTodosLosLibrosConDetalles() : ResponseEntity<List<ColeccionDto>>
+        +obtenerColeccionConDetallesPorId(Long) : ResponseEntity<ColeccionDto>
+    }
+
+    class DistribucionController {
+        -DistribucionService distribucionService
+        +getAllDistribuciones() : ResponseEntity<List<DistribucionDto>>
+        +getDistribucionById(Long) : ResponseEntity<DistribucionDto>
+        +createDistribucion(DistribucionDto) : ResponseEntity<DistribucionDto>
+        +updateDistribucion(Long, DistribucionDto) : ResponseEntity<DistribucionDto>
+        +deleteDistribucion(Long) : ResponseEntity<Void>
+    }
+
+    class EditorialController {
+        -GrupoBaratariaService grupoBaratariaService
+        +getAllEditoriales() : ResponseEntity<List<GrupoBaratariaDto>>
+        +getEditorialById(Long) : ResponseEntity<GrupoBaratariaDto>
+        +createEditorial(GrupoBaratariaDto) : ResponseEntity<GrupoBaratariaDto>
+        +updateEditorial(Long, GrupoBaratariaDto) : ResponseEntity<GrupoBaratariaDto>
+        +deleteEditorial(Long) : ResponseEntity<Void>
+    }
+
+    class LibroController {
+        -LibroService libroService
+        +getAllLibros() : ResponseEntity<List<LibroDto>>
+        +getLibroById(Long) : ResponseEntity<LibroDto>
+        +createLibro(LibroDto) : ResponseEntity<LibroDto>
+        +updateLibro(Long, LibroDto) : ResponseEntity<LibroDto>
+        +deleteLibro(Long) : ResponseEntity<Void>
+    }
+
+    class UsuarioController {
+        -UsuarioService usuarioService
+        +getAllUsuarios() : ResponseEntity<List<UsuarioDto>>
+        +registrarUsuario(UsuarioDto, String) : ResponseEntity<UsuarioDto>
+        +obtenerUsuario(Long) : ResponseEntity<UsuarioDto>
+        +eliminarUsuario(Long) : ResponseEntity<Void>
+    }
+}
+
+' Clases de seguridad
+package com.jem.barataria.security {
+    class CustomUserDetailsService {
+        -UsuarioRepository usuarioRepository
+        +loadUserByUsername(String) : UserDetails
+    }
+
+    enum RolUsuario {
+        ADMIN
+        EDITOR
+        USER
+    }
+
+    class SecurityConfig {
+        +securityFilterChain(HttpSecurity) : SecurityFilterChain
+    }
+
+    class BCryptPasswordEncoder {
+        +encode(String) : String
+        +matches(CharSequence, String) : boolean
+    }
+}
+
+' Relaciones de seguridad
+CustomUserDetailsService --> UsuarioRepository
+SecurityConfig ..> HttpSecurity
+SecurityConfig ..> BCryptPasswordEncoder
+UsuarioController ..> CustomUserDetailsService
+
+' Configuración de Spring Security
+package org.springframework.security.config.annotation.web {
+    class HttpSecurity {
+        +authorizeHttpRequests() : void
+        +csrf() : void
+        +httpBasic() : void
+    }
+}
+
+' Extendiendo el diagrama con relaciones de seguridad
+CustomUserDetailsService ..> UsuarioEntity : load user details
+BCryptPasswordEncoder ..> UsuarioController : validate password
+
+' Relaciones con componentes de seguridad
+SecurityConfig --> CustomUserDetailsService : uses > 
+UsuarioController ..> SecurityConfig : uses > 
+
+
+' Clase principal
+package com.jem.barataria {
+    class BaratariaApplication {
+        +main(String[])
+    }
+}
+
+' Relaciones de controladores a servicios
+AutorController --> AutorService
+ColeccionController --> ColeccionService
+DistribucionController --> DistribucionService
+EditorialController --> GrupoBaratariaService
+LibroController --> LibroService
+UsuarioController --> UsuarioService
+
+' Relación de la aplicación principal
+BaratariaApplication ..> AutorController
+BaratariaApplication ..> ColeccionController
+BaratariaApplication ..> DistribucionController
+BaratariaApplication ..> EditorialController
+BaratariaApplication ..> LibroController
+BaratariaApplication ..> UsuarioController
+
+' Relaciones de servicio a repositorio
+AutorService --> AutorRepository
+ColeccionService --> ColeccionRepository
+DistribucionService --> DistribucionRepository
+GrupoBaratariaService --> GrupoBaratariaRepository
+LibroService --> LibroRepository
+UsuarioService --> UsuarioRepository
+
+' Relaciones entre entidades y DTOs
+AutorEntity ..> AutorDto
+ColeccionEntity ..> ColeccionDto
+DistribucionEntity ..> DistribucionDto
+GrupoBaratariaEntity ..> GrupoBaratariaDto
+LibroEntity ..> LibroDto
+UsuarioEntity ..> UsuarioDto
+
+' Relaciones entre entidades y repositorios
+AutorRepository ..> AutorEntity
+ColeccionRepository ..> ColeccionEntity
+DistribucionRepository ..> DistribucionEntity
+GrupoBaratariaRepository ..> GrupoBaratariaEntity
+LibroRepository ..> LibroEntity
+UsuarioRepository ..> UsuarioEntity
+
+' Relaciones
+AutorEntity "1" -- "*" LibroEntity
+ColeccionEntity "1" -- "*" LibroEntity
+DistribucionEntity "1" -- "*" GrupoBaratariaEntity
+GrupoBaratariaEntity "1" -- "*" UsuarioEntity
+GrupoBaratariaEntity "1" -- "*" DistribucionEntity
+GrupoBaratariaEntity "1" -- "*" ColeccionEntity
+LibroEntity "1" -- "1" ColeccionEntity
+LibroEntity "1" -- "1" AutorEntity
+UsuarioEntity "1" -- "1" GrupoBaratariaEntity
+@enduml

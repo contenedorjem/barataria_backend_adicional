@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "PasswordEncoderGenerator",
+            "request": "launch",
+            "mainClass": "com.jem.barataria.utils.PasswordEncoderGenerator",
+            "projectName": "barataria"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BaratariaApplication<barataria>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.jem.barataria.BaratariaApplication",
+            "projectName": "barataria",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=54699 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=barataria"
+        }
+    ]
+}
