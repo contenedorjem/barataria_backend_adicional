@@ -10,9 +10,4 @@ public class ForwardingController {
     public String redirect() {
         return "forward:/index.html";
     }
-
-    @RequestMapping(value = "/{path:[^\\.]*}", method = RequestMethod.GET)
-    public String redirectToIndex() {
-        return "forward:/index.html";
-    }
 }
