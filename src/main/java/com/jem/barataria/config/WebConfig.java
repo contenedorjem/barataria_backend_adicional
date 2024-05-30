@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:4200", "https://barataria-8248826640a3.herokuapp.com", "https://barataria2-7c00aa53186c.herokuapp.com")
+                .allowedOrigins("http://localhost:4200", "https://barataria-8248826640a3.herokuapp.com", "https://barataria2-7c00aa53186c.herokuapp.com", "*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
